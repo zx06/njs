@@ -1,0 +1,20 @@
+version: 3
+tasks:
+  build-wasm:
+    env:
+      GOOS: js
+      GOARCH: wasm
+    vars:
+      wasm_exec: "$(go env GOROOT)/misc/wasm/wasm_exec.js"
+      wasm_out: "public/assets/wasm/main.wasm"
+    watch: true
+    sources:
+      - go-wasm/**
+    generates:
+      - public/assets/wasm/main.wasm
+      - src/lib/wasm_exec.js
+    cmds:
+      # copy wasm_exec.js
+      - cmd: cp "{{.wasm_exec}}" src/lib
+      # build wasm
+      - cmd: go build -o "{{.wasm_out}}" ./go-wasm/
